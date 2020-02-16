@@ -1,0 +1,70 @@
+<style>
+    *{
+        font-family: 微軟正黑體
+    }
+   #answerRecord{
+        border : 1px solid #888888;
+        height : 100px;
+        width : 50%;
+        margin-top : 30px;
+    }
+</style>
+</head>
+<body>
+<h5>猜數字遊戲</h5>
+<input type="button" value="start games" onclick="creatTopic()"><br>
+<input type="text" id="userAnswer">
+<input type="button" id="goButton" value="GO" onclick="checkNum()">
+<div id="answerRecord"></div>
+
+<script>
+    
+    function creatTopic(){  //產生題目(4碼數字)
+        let t=''; //讓t為string
+        for (let i=0 ; i<4 ; i++){
+           t += Math.floor(Math.random()*10);
+        }
+        console.log(t);
+        return t;
+    }
+    
+
+    function checkNum(){  //取出&確認格式&比對答案
+        let t = creatTopic().answer;
+        let n = document.getElementById("userAnswer").value;
+        if (n.match(/^[0-9]{4}$/)){
+            document.getElementById("answerRecord").innerHTML= `${n} <br>` ;
+        }else{
+            alert('格式不對喔~請輸入4位數字!');
+        }
+        let x =  n[1];
+        console.log(x) ;
+        console.log(t) ;
+    
+
+        for(let i=0 ; i<n.length ;i++){
+            let a,b;
+            if (n[i]=t[i]){
+                a++;
+                continue;
+            }else{
+                for(let j=0 ; j<t.length ; j++){
+                    if (n[i]=t[j]){
+                        b++;
+                    }
+                }   
+            }
+        }
+        document.getElementById("answerRecord").innerHTML = `${a}A${b}B`
+    }
+
+
+ 
+
+
+</script>
+
+
+
+
+
