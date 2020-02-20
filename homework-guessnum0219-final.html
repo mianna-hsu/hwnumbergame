@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        *{
+            font-family: 微軟正黑體
+        }
+
+        h5{
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #555;
+            margin-bottom: 40px;
+            /* text-decoration: underline; */
+        }
+
+
+        #form{
+            text-align: center;
+            margin-top: 50px
+        }
+        
+      
+
+        #startbtn ,#retbtn{
+            margin: 0 auto;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            margin-left: 20px;
+
+        }
+
+        #userAnswer{
+            width: 20%;
+            margin: 20px auto;
+            display: inline;
+        }
+
+        #goButton{
+            margin: 20px auto;
+            display: inline;
+        }
+
+        #answerRecord{
+            /* border : 1px solid #888888; */
+            background-color:rgb(240, 240, 157) ;
+            margin: 10px auto;
+            padding: 20px;
+            height :45vh;
+            width : 50%;
+            font-size: 30px;
+            overflow-y:scroll;           
+        }
+
+        #timeCount{
+            width: 220px;
+            height: 150px;
+            border: solid 3px #bbb;
+            border-radius: 5px; 
+            position: absolute;
+            top:270px;
+            right:60px;
+            padding: 20px 10px;
+            line-height:2.5em;
+            font-size: 20px;
+
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+    <div id="form">
+        <h5>|&nbsp猜數字遊戲&nbsp|</h5>
+        <input type="button" id="startbtn" class="btn btn-info" value="開始遊戲" onclick="creatTopic()">
+        <input type="button" id="retbtn" class="btn btn-info" value="重新一回合" onclick="reset()"><br>
+        <input type="text" id="userAnswer" class="form-control" placeholder="請填寫4位數字">
+        <input type="button" id="goButton" class="btn btn-secondary btn-sm"  value="送出答案" onclick="checkNum()">
+        <div id="answerRecord"></div>
+        <div id="timeCount"></div>
+    </div>
+   
+
+    <!-- modal 跳出答對訊息 -->
+    <!-- <button id="modalbtn" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"></button>
+
+    <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>登登!!恭喜你答對囉~</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Play Again</button>
+        </div>
+        </div>
+
+    </div>
+    </div> -->
+
+    <script>
+        let topic = ''; //為string
+        let times =null ;
+        
+        function creatTopic(){  //產生題目(4碼數字)
+            topic = '';
+            while (topic.length<4){
+                let num = Math.floor(Math.random()*10);
+                let checknum = true;
+                for(let j=0 ; j<topic.length ;j++){
+                    if( num == topic[j]){
+                        checknum = false;
+                    }
+                }if(checknum){
+                    topic += num;
+                }console.log("topic:"+topic)
+            }console.log("creatTopic():"+topic)
+            document.getElementById("timeCount").innerHTML = `<font color="#555">共有10次作答機會</font>`;
+            document.getElementById("answerRecord").innerHTML = `<font color="#0a5378">* * * * <br></font>`;
+        }
+
+
+        function checkNoRepeat(n){ //確認玩家輸入答案是否重複數字
+            for(let i=0 ; i<n.length ;i++){
+                for(let j=i+1 ; j<n.length ;j++){
+                    if(n[i] != n[j]){
+                        continue;
+                    }else{
+                        return false;
+                    }
+                }
+            }return true;
+        }
+
+
+    
+        function checkNum(){  //取出&確認格式&比對答案
+            let n = document.getElementById("userAnswer").value;
+
+            if (n.match(/^[0-9]{4}$/) && checkNoRepeat(n)){
+                times += 1;
+                document.getElementById("answerRecord").innerHTML += `<font color="#0a5378"> ${n} </font>` ;
+
+            }else{
+                document.getElementById("userAnswer").innerHTML =''; //有alert在不能執行耶..
+                alert("格式不對喔~ \n 請輸入4個不重複的數字!");
+                return;
+            }
+
+            let a= 0, b=0;
+            for(let i=0 ; i<n.length ;i++){
+                if (n[i] == topic[i]){
+                    a++;
+                    continue;
+                }else{
+                    for(let j=0 ; j<topic.length ; j++){
+                        if (n[i] == topic[j]){
+                            b++;
+                        }
+                    }   
+                }
+             }
+
+            //  if (a==){
+            //      //function  
+            //  }
+            
+             document.getElementById("userAnswer").value = '';
+             document.getElementById("answerRecord").innerHTML += `<font color="#0a5378"> &nbsp ${a}A${b}B <br></font>`;
+             document.getElementById("timeCount").innerHTML = `<font color="#555">已作答 ${times}次 <br> 還有${10-times}次機會 </font>`;
+
+             if (a==4){
+                 alert(`登登! 沒錯~答案就是 ${n}  \n 恭喜你答對囉~~`);
+                 reset();
+             }
+
+             if(times==10){
+                document.getElementById("timeCount").innerHTML = `<font color="#555">已作答 ${times}次 <br> 還有${10-times}次機會 </font>`;
+                gameover();
+             }
+
+            
+            // while (a == 4){
+            //     // document.getElementById("modalbtno").addEventListener("click");
+            //     document.getElementById("myModal").classList.toggle("show");
+            //     }return
+        }
+
+        function gameover(){
+            alert(`QQ...10次的機會用完了，GAME OVER \n 別氣餒，再挑戰一次~GO`);
+            reset();
+        }
+
+        function reset(){
+            document.getElementById("answerRecord").innerHTML ='';
+            times=0;
+            document.getElementById("timeCount").innerHTML = `共有10次作答機會`;
+            creatTopic();
+
+        }
+    
+    </script>
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
